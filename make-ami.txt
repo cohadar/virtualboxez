@@ -1,0 +1,55 @@
+# start virtualbox, click on new
+	Name: piglet-ami
+	Type: Linux
+	Version: Ubuntu 64
+	Memory Size: 2048 MB
+	click Create
+	Disk: 12 GB (Fixed size)
+	click Create
+
+# go to settings for piglet-ami
+	System->Processors: 4
+	Network->Attached to: Bridged Adapter
+		Name: en0
+
+# normal start, pick ubuntu iso
+	click install ubuntu
+	select download updates
+	select install third party software
+	continue
+	keyboard: english macintosh
+	fill hostname etc...
+	continue
+	restart it once for installation to finish
+
+# update package list, upgrade installed packages
+sudo apt-get -y update
+sudo apt-get -y upgrade
+
+# set up remote login
+sudo apt-get install openssh-server
+sudo service ssh status
+sudo gedit /etc/ssh/sshd_config
+	PasswordAuthentication no
+	ChallengeResponseAuthentication no
+	PermitEmptyPassword no
+
+# generate vm machine keys
+ssh-keygen -t rsa -b 4096 -C "cohadar@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+
+# add id_rsa.pub to github account and other places as needed
+cat ~/.ssh/id_rsa.pub | nc piglet.local 1234
+on-laptop$ nc -l 1234
+
+# make vm accessible from laptop
+nc -l 1234 >> ~/.ssh/authorized_keys
+on-laptop$ cat ~/.ssh/id_rsa.pub | nc piglet-ami.local 1234
+
+# test it
+on-laptop$ ssh piglet-ami.local
+
+# shutdown it from inside to make a clean shutdown
+# that's it, do NOT add anything else ever, this is the ami.
+sudo shutdown
