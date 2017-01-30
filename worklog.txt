@@ -9,12 +9,26 @@ sudo gedit /etc/ssh/sshd_config
 	PasswordAuthentication no
 	ChallengeResponseAuthentication no
 	PermitEmptyPassword no
-mkdir ~/.ssh
+
+# generate vm machine keys
+ssh-keygen -t rsa -b 4096 -C "cohadar@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+# add id_rsa.pub to github account and other places as needed
+cat ~/.ssh/id_rsa.pub
+
+# make vm accessible from laptop
 nc -l 1234 >> ~/.ssh/authorized_keys
 on-laptop$ cat ~/.ssh/id_rsa.pub | nc piglet-ami.local 1234
 
 # test it
 on-laptop$ ssh piglet-ami.local
+
+# install tools
+sudo apt-get install git
+git config --global user.email "cohadar@gmail.com"
+git config --global user.name "Damir Cohadarevic"
+git config --global push.default simple
 
 # shutdown piglet-ami and make a clone piglet-alfa, make sure to use 'regenerate MAC' option
 # start piglet-alfa, make sure piglet-ami is down!!!
