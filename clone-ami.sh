@@ -1,8 +1,10 @@
 #!/bin/sh
 
 # example:
-# cat names.txt | xargs -n 1 ./clone-ami.sh 
+# cat names.txt | xargs ./clone-ami.sh 
 
 host=${HOSTNAME%.local}
 
-VBoxManage clonevm ${host}-ami --name ${host}-$1
+for arg in "$@"; do
+    VBoxManage clonevm ${host}-ami --name ${host}-${arg}
+done
