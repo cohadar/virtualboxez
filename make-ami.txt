@@ -12,15 +12,26 @@
 	Network->Attached to: Bridged Adapter
 		Name: en0
 
-# normal start, pick ubuntu iso
-	click install ubuntu
-	select download updates
-	select install third party software
+# normal start, pick ubuntu server iso
+	english
+	install ubuntu server
+	english
+	other->europe->serbia
+	en_us.utf8
+	detect keyboard layout = no
+	country of origin of keyboard = englush us
+	macintosh
+	hostname: piglet-ami
+	Full Name: your name
+	user: cohadar
+	pass: ****
+	encrypt home: no
+	set time zone
+	guided use entire disc
+	no automatic updates
+	select: DNS server, OpenSSH server, standard system utilities
+	install GRUB: yes
 	continue
-	keyboard: english macintosh
-	fill hostname etc...
-	continue
-	restart it once for installation to finish
 
 # update package list, upgrade installed packages
 sudo apt-get -y update
@@ -40,6 +51,7 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 
 # add id_rsa.pub to github account and other places as needed
+sudo apt-get install netcat
 cat ~/.ssh/id_rsa.pub | nc piglet.local 1234
 on-laptop$ nc -l 1234
 
