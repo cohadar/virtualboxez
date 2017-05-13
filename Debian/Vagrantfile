@@ -1,0 +1,21 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  
+  config.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+  end
+
+  config.vm.box = "debian/jessie64"
+  config.vm.host_name = 'piglet-debian'
+  config.vm.network "public_network", bridge: "en4: Thunderbolt Ethernet", ip: "10.50.10.50"  
+
+  config.vm.provision "file", source: "~/.bash_profile", destination: "~/.bash_profile"
+  config.vm.provision "file", source: "~/.gitconfig", destination: "~/.gitconfig"
+  config.vm.provision "shell", path: "bootstrap.sh", run: "always", privileged: true
+
+  config.vm.synced_folder "~/VBoxShared", "/home/cohadar/VBoxShared"
+
+  config.vm.post_up_message = "To log into machine: vagrant ssh"
+
+end
